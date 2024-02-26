@@ -4,12 +4,13 @@ __TODO : add a header image with logos__
 
 Welcome on this tutorial ! This tutorial will guide you through the process of creating a custom object detection model for street images coming from Panoramax, using YOLOv8 and Label Studio. The tutorial will help you through:
 
-- Finding training pictures using OpenStreetMap and Panoramax
-- Label Studio setup and pictures annotation
-- YOLOv8 setup and model training
-- Automating predictions on Panoramax images
+- Find known object locations by querying OpenStreetMap
+- Collect nearby pictures using Panoramax
+- Annotate pictures using Label Studio
+- Train a detection model with YOLOv8
+- Detect objects in Panoramax images
 
-We will also explores the re-training process based on false positives and offers insights into refining the model. The goal is to make you as autonomous and empowered on object detection by understanding the complete workflow.
+We will also explore the re-training process based on false positives and offers insights into refining the model. The goal is to make you as autonomous and empowered on object detection by understanding the complete workflow.
 
 ## 🌐 The big picture
 
@@ -19,11 +20,11 @@ __TODO : architecture/process scheme__
 
 Pictures annotation will be essential in this process. It's mainly teaching the algorithm what the features you're searching look like. We need to tell with many examples "This is a car, and it's right there in the picture". To do so, we draw over the picture many rectangles to spot objects, and assign to each of them a label (or class) to distinguish various features in a single image.
 
-But before annotating pictures, we need actual pictures showing features we're searching. We will use here both [OpenStreetMap](https://www.openstreetmap.org/) and [Panoramax](https://panoramax.fr/) to find useful pictures. OpenStreetMap (OSM) stands as a global collaborative mapping project, often referred to as the _Wikipedia of maps_. It serves as an extensive geographic database where contributors from around the world can actively participate in improving and updating mapping data. OSM allows anyone to contribute by adding or modifying geographic information, making it a valuable resource for accessing detailed and up-to-date spatial data. So, first we will extract position of features we want in OpenStreetMap, then request Panoramax to have pictures showing the wanted feature.
+But before annotating pictures, we need actual pictures showing features we're searching for. We will use here both [OpenStreetMap](https://www.openstreetmap.org/) and [Panoramax](https://panoramax.fr/) to find useful pictures. OpenStreetMap (OSM) stands as a global collaborative mapping project, often referred to as the _Wikipedia of maps_. It serves as an extensive geographic database where contributors from around the world can actively participate in improving and updating mapping data. OSM allows anyone to contribute by adding or modifying geographic information, making it a valuable resource for accessing detailed and up-to-date spatial data. So, first we will extract position of features we want in OpenStreetMap, then request Panoramax to have pictures showing the wanted feature.
 
-With this example set of pictures, we could start annotating. [Label Studio](https://labelstud.io/) is an open-source platform designed for data labeling and annotation tasks. It serves as a comprehensive tool for efficiently labeling diverse datasets, including images, text, and audio. With Label Studio, users can create labeled datasets for training machine learning models. These datasets can then be exported to train a YOLO model.
+With this example set of pictures, we could start annotating. [Label Studio](https://labelstud.io/) is an open-source software designed for data labeling and annotation tasks. It serves as a comprehensive tool for efficiently labeling diverse datasets, including images, text, and audio. With Label Studio, users can create labeled datasets for training machine learning models. These datasets can then be exported to train a YOLO model.
 
-Once we get a trained model from YOLO, we can run object detections on a larger scale, using Panoramax dataset. We will rely on Python script to browser through the catalog, launch YOLO, and export interesting pictures and a GeoJSON file with positions of detected features.
+Once we get a trained model from YOLO, we can run object detections on a larger scale, using Panoramax dataset. We will rely on Python script to browse through the catalog, launch YOLO, and export interesting pictures and a GeoJSON file with positions of pictures showing the detected features.
 
 Now we have a clearer idea of the whole process, let's get started !
 
