@@ -1,20 +1,18 @@
-# 🖼️🤖 Tutorial : get started with Yolo and Panoramax !
+# 🖼️🤖 Tutorial : get started with YOLO and Panoramax !
 
-__TODO : add a header image with logos__
+![Software logos](./Images/logos.png)
 
 Welcome on this tutorial ! This tutorial will guide you through the process of creating a custom object detection model for street images coming from Panoramax, using YOLOv8 and Label Studio. The tutorial will help you through:
 
-- Find known object locations by querying OpenStreetMap
-- Collect nearby pictures using Panoramax
-- Annotate pictures using Label Studio
-- Train a detection model with YOLOv8
+- Find known object locations by querying __OpenStreetMap__
+- Collect nearby pictures using __Panoramax__
+- Annotate pictures using __Label Studio__
+- Train a detection model with __YOLOv8__
 - Detect objects in Panoramax images
 
 We will also explore the re-training process based on false positives and offers insights into refining the model. The goal is to make you as autonomous and empowered on object detection by understanding the complete workflow.
 
 ## 🌐 The big picture
-
-__TODO : architecture/process scheme__
 
 [YOLOv8](https://docs.ultralytics.com/), or _You Only Look Once (version 8)_, is a powerful and efficient object detection algorithm widely utilized in computer vision applications. It builds upon the success of its predecessors, offering improved accuracy and speed in real-time object detection tasks. YOLOv8 is particularly notable for its ability to detect and classify objects within images or video frames swiftly and accurately. Developed with a focus on simplicity and effectiveness, YOLOv8 employs a single neural network to simultaneously predict bounding boxes and class probabilities for multiple objects in a given scene.
 
