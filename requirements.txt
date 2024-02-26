@@ -1,0 +1,5 @@
+requests
+label-studio
+torch
+torchvision
+ultralytics

@@ -1,0 +1,5 @@
+env/
+training_pictures/
+hydrants_data*/
+hydrants_model*/
+yolo*.pt
