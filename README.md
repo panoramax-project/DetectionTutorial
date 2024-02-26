@@ -28,7 +28,7 @@ Once we get a trained model from YOLO, we can run object detections on a larger 
 
 Now we have a clearer idea of the whole process, let's get started !
 
-## Find pictures with Panoramax & OpenStreetMap
+## 📷🗺️ Find pictures with Panoramax & OpenStreetMap
 
 ### Locating interesting features in OpenStreetMap
 
@@ -46,7 +46,7 @@ Then click on _Build and execute_, data will appear over the map.
 
 OpenStreetMap data can then be exported using __Export__ button. Save your file as _GeoJSON_ format. Note that if you run into any trouble during that step, an example file is also provided as [`osm_hydrants_lyon.geojson`](./osm_hydrants_lyon.geojson).
 
-### 📷 Downloading nearby picture in Panoramax
+### Downloading nearby picture in Panoramax
 
 The [Panoramax API](https://panoramax.ign.fr/api/docs/swagger#/Pictures/get_api_search) offers an endpoint to retrieve pictures looking at a specific object. For example, you can run a _HTTP GET_ query like:
 
@@ -154,10 +154,25 @@ Once you're done with picture labelling, you can export your annotations using t
 
 ![Export settings in Label Studio](./Images/labelstudio_export.png)
 
+Before starting the training, we have to split the dataset between two subsets of pictures :
 
-## 🏃‍♀️ Model training with YOLO
+- __Training pictures__, which will be used to teach the model what to detect
+- __Validation pictures__, which are used after teaching to check model accuracy
+
+To have an optimal training, we may have 80% of training pictures, and 20% of validation pictures. To split our dataset, you can do the following :
+
+- Extract a first time the exported ZIP, and name it as `hydrants_data_v1`. It will be our __training__ dataset.
+  - Go in the extracted directory
+  - Delete 20% of the images in `pictures` folder (make sure they're sorted by file name)
+  - Delete same quantity of text files in the `labels` folder (same names as the deleted pictures)
+- Extract a second time the exported ZIP, and name it as `hydrants_data_validation`. It will be our __validation__ dataset.
+  - Go in the extracted directory
+  - Delete 80% of the images in `pictures` folder (make sure they're sorted by file name)
+  - Delete same quantity of text files in the `labels` folder (same names as the deleted pictures)
 
 Our initial dataset is ready. It's time for YOLO to help us train our model.
+
+## 🏃‍♀️ Model training with YOLO
 
 ### Setup
 
@@ -183,14 +198,15 @@ In this folder, we need to add a little configuration file for YOLO. It should b
 
 ```yaml
 train: /path/to/hydrants_data_v1/images
-val: /path/to/hydrants_data_v1/images
+val: /path/to/hydrants_data_validation/images
 nc: 1
 names: ['pillar']
 ```
 
 You may need to change the content of the file:
 
-- `train` and `val`: to match the file path to access the `images` folder inside your `hydrants_data_v1` directory
+- `train`: to match the file path to access the `images` folder inside your `hydrants_data_v1` directory
+- `val`: to match the file path to access the `images` folder inside your `hydrants_data_validation` directory
 - `names`: if you have used a different label name than `pillar`
 
 Now we're ready to launch some training ! Note that your computer GPU will heat up a bit 🌡️ Launch the following command:
@@ -311,15 +327,17 @@ Once pictures are imported, you go back to labelling pictures (yes I know, _bori
 
 Make sure each class has at least a hundred annotations through the whole set of pictures. If a class is less represented than the others, it will not be as efficient to avoid false positives.
 
-Once you're done, we re-do the export like in first model version. Export in YOLO format, save and extract the generated ZIP file in a `hydrants_data_v2` folder.
+Once you're done, we re-do the export like in first model version. Export in YOLO format and save the generated ZIP file.
 
 ### Training the model
 
-Let's train again our model. Like first version, we need a `data.yaml` file associated to this new exported dataset. Create it in `hydrants_data_v2` folder, but this time with a content a bit different:
+Let's train again our model. Like in previous version, we need to split our pictures into a training and a validation dataset. Repeat the 80% / 20% split operation, in order to have a `hydrants_data_v2` folder for training pictures, and `hydrants_data_validation` folder for validation pictures.
+
+And as in first model preparation, we need a `data.yaml` file associated to this new exported dataset. Create it in `hydrants_data_v2` folder, but this time with a content a bit different:
 
 ```yaml
 train: /path/to/hydrants_data_v2/images
-val: /path/to/hydrants_data_v2/images
+val: /path/to/hydrants_data_validation/images
 nc: 5
 names: ['cone', 'pillar', 'rearlight', 'redclothes', 'redsign']
 ```
@@ -342,10 +360,17 @@ After a bit of processing, a new `hydrants_model_v2` folder will be available. T
 
 ![Normalized confusion matrix](./Images/yolo_confusionmatrix.png)
 
-Everything not on the diagonal are mistaken labels. Here, we can see that:
+It is readable that way:
 
-- Many rear lights and red signs are missed or _false negatives_ (predicted as background)
-- A lot of rear lights are detected wrongly in the background (_false positives_)
+- The left / vertical axis is the __predicted class__, what the model think the detected object is
+- The bottom / horizontal axis is the __true class__, what is really present in the picture (based on your validation dataset)
+
+The most important thing to read is what happens to pillars from the validation dataset, in particular what's not outcoming as a pillar. On this example matrix, we see:
+
+- 68% of pillars in validation dataset are correctly found as pillars by model (_true positives_)
+- 32% of them are not detected by the model (_false negatives_)
+
+This is not extremely good, but not _that bad_ as well. Another metric is _false positives_, things detected as pillars where they're not. Here, no pillar in validation dataset outcomes as a red sign, traffic cone, car rear light... Which is a good news !
 
 [A reference documentation on interpreting these results is available in YOLO docs](https://docs.ultralytics.com/guides/yolo-performance-metrics/).
 

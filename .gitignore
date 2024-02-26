@@ -3,3 +3,4 @@ training_pictures/
 hydrants_data*/
 hydrants_model*/
 yolo*.pt
+detected_features*
