@@ -214,10 +214,12 @@ yolo detect train \
 	data=./hydrants_data_v1/data.yaml \
 	model=yolov8n.pt \
 	project=hydrants_model_v1 \
-	epochs=100 imgsz=640
+	epochs=100 imgsz=2048
 ```
 
 We're using here as a base model `yolov8n.pt` ([see all available models in docs](https://docs.ultralytics.com/models/yolov8/#supported-tasks-and-modes)), this could be tweaked for improving model performance.
+
+Also note that the `imgsz=2048` parameter should correspond to the actual width of retrieved pictures. In the `find_pics.py` script we used, all pictures are downloaded with a fixed width of 2048 pixels. Don't forget to change the value here if you have different picture sizing.
 
 ![YOLO training on your pictures and heating up your GPU](./Images/yolo_training.png)
 
@@ -234,7 +236,7 @@ yolo predict \
 	project=hydrants_model_v1 \
 	model=./hydrants_model_v1/train/weights/best.pt \
 	source=./Images/pic_with_hydrant.jpg \
-	imgsz=640 save_txt=True
+	imgsz=2048 save_txt=True
 ```
 
 Congratulations, you've detected your first object with your model ! 🎆 Results will be available in `hydrants_model_v1/predict` folder.
@@ -351,7 +353,7 @@ yolo detect train \
 	data=./hydrants_data_v2/data.yaml \
 	model=yolov8n.pt \
 	project=hydrants_model_v2 \
-	epochs=100 imgsz=640
+	epochs=100 imgsz=2048
 ```
 
 After a bit of processing, a new `hydrants_model_v2` folder will be available. This time, we can give a closer look at generated statistics (in `train` sub-folder). For example, let's look at the __Normalized Confusion Matrix__ (`confusion_matrix_normalized.png`). It lists the labels mistaken for another class.
@@ -384,7 +386,7 @@ yolo predict \
 	model=./hydrants_model_v2/train/weights/best.pt \
 	source=./Images/pic_with_hydrant.jpg \
 	classes=1 \
-	imgsz=640 save_txt=True
+	imgsz=2048 save_txt=True
 ```
 
 __Note__ the new parameter `classes=1`, this is important and let the command know that you only want to detect objects corresponding the label with ID 1. It corresponds to the __second__ entry of the classes list in `classes.txt` file (ID are starting at zero). Here, ID 1 corresponds to `pillar`, our fire hydrant label.
@@ -415,6 +417,8 @@ When you train again your model, you may set the `model` parameter differently:
 - If you change list of classes, model should be set to a YOLO default model (here `yolov8n.pt`)
 
 When you're confident enough in your model, you may also add a `conf=0.5` parameter in your manual predictions or in the `predict_pano.py` script. The confidence parameters will only keep detections with a confidence score higher than the set value, avoid _noise_ in results.
+
+Another setting that can help on improving the results is `imgsz`. We saw that it should match your pictures width. But switching to lower values can help detecting objects in the foreground (too big to be recognized), and switching to higher values can help detecting objects in the background (too small to be recognized).
 
 ## 👋 Conclusion
 
