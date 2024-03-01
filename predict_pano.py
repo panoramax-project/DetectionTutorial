@@ -9,7 +9,7 @@ import os
 #
 
 # The Panoramax API endpoint to use
-PANORAMAX_API="https://panoramax.ign.fr/api"
+PANORAMAX_API="https://api.panoramax.xyz/api"
 # The search area (min X, min Y, max X, max Y)
 SEARCH_BBOX=[2.25256,48.96895,2.26447,48.97247]
 # Path to your trained model ".pt" file

@@ -8,7 +8,7 @@ import os
 #
 
 # The Panoramax API endpoint to use
-PANORAMAX_API="https://panoramax.ign.fr/api"
+PANORAMAX_API="https://api.panoramax.xyz/api"
 # The GeoJSON input file
 OSM_FEATURES="./osm_hydrants_lyon.geojson"
 # How many pictures you want

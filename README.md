@@ -214,7 +214,7 @@ yolo detect train \
 	data=./hydrants_data_v1/data.yaml \
 	model=yolov8n.pt \
 	project=hydrants_model_v1 \
-	epochs=100 imgsz=2048
+	epochs=100 imgsz=2048 batch=-1
 ```
 
 We're using here as a base model `yolov8n.pt` ([see all available models in docs](https://docs.ultralytics.com/models/yolov8/#supported-tasks-and-modes)), this could be tweaked for improving model performance.
@@ -353,7 +353,7 @@ yolo detect train \
 	data=./hydrants_data_v2/data.yaml \
 	model=yolov8n.pt \
 	project=hydrants_model_v2 \
-	epochs=100 imgsz=2048
+	epochs=100 imgsz=2048 batch=-1
 ```
 
 After a bit of processing, a new `hydrants_model_v2` folder will be available. This time, we can give a closer look at generated statistics (in `train` sub-folder). For example, let's look at the __Normalized Confusion Matrix__ (`confusion_matrix_normalized.png`). It lists the labels mistaken for another class.
@@ -428,6 +428,8 @@ The Panoramax team is here to help you, you can come discuss with us on:
 
 - [Forum des Géocommuns](https://forum.geocommuns.fr/c/panoramax/6), don't hesitate to open a topic here, forum is originally in 🇫🇷 French but feel free to start a discussion in 🇬🇧 English 😊
 - Email at [panoramax@panoramax.fr](mailto:panoramax@panoramax.fr)
+
+Also, feel free to open an issue on this repository, either to improve the tutorial or to report any problem you could encounter !
 
 ## 📰 License
 

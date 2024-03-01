@@ -4,3 +4,6 @@ hydrants_data*/
 hydrants_model*/
 yolo*.pt
 detected_features*
+*.zip
+*.yaml
+tp_*/
