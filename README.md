@@ -2,6 +2,8 @@
 
 ![Software logos](./Images/logos.png)
 
+__🇫🇷 [Version française ici](./README_fr.md) 🇫🇷__
+
 Welcome on this tutorial ! This tutorial will guide you through the process of creating a custom object detection model for street images coming from Panoramax, using YOLOv8 and Label Studio. The tutorial will help you through:
 
 - Find known object locations by querying __OpenStreetMap__
@@ -71,7 +73,7 @@ You can give a look at the [script](./find_pics.py), especially if you want to c
 
 ```python
 # The Panoramax API endpoint to use
-PANORAMAX_API="https://panoramax.ign.fr/api"
+PANORAMAX_API="https://api.panoramax.xyz/api"
 # The GeoJSON input file
 OSM_FEATURES="./osm_hydrants_lyon.geojson"
 # How many pictures you want
@@ -190,9 +192,7 @@ pip install ultralytics
 
 ### Training our first model 👶
 
-Here we are, ready to train our first object detection model with YOLO ! To do so, we need to extract the contents of the Label Studio ZIP export. You can name the extracted folder `hydrants_data_v1`.
-
-In this folder, we need to add a little configuration file for YOLO. It should be named `data.yaml`, and have the following content:
+Here we are, ready to train our first object detection model with YOLO ! We first need to create a little configuration file for YOLO. It should be named `data.yaml`, and have the following content:
 
 ```yaml
 train: /path/to/hydrants_data_v1/images
@@ -255,7 +255,7 @@ This is done with the Python script named [`predict_pano.py`](./predict_pano.py)
 
 ```python
 # The Panoramax API endpoint to use
-PANORAMAX_API="https://panoramax.ign.fr/api"
+PANORAMAX_API="https://api.panoramax.xyz/api"
 # The search area (min X, min Y, max X, max Y)
 SEARCH_BBOX=[2.25256,48.96895,2.26447,48.97247]
 # Path to your trained model ".pt" file
