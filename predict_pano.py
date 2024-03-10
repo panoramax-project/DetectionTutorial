@@ -10,6 +10,8 @@ import os
 
 # The Panoramax API endpoint to use
 PANORAMAX_API="https://api.panoramax.xyz/api"
+# nom de l'objet à chercher
+object_name="Balise Hydrant"
 # The search area (min X, min Y, max X, max Y)
 SEARCH_BBOX=[2.25256,48.96895,2.26447,48.97247]
 # Path to your trained model ".pt" file
@@ -42,7 +44,7 @@ def processPicturesChunk(pnmxCollectionItems, picturesUrls, start, end):
 		# If a picture has detections, save it
 		if len(res.boxes) > 0:
 			item = pnmxCollectionItems["features"][start+i]
-			print("        - Hydrant found in picture", item["id"])
+			print("        - ",object_name,"found in picture", item["id"])
 			picResults.append(item)
 			res.save(filename=f"{OUTPUT_PICTURES}/{item['id']}.jpg")
 
