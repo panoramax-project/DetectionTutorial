@@ -22,6 +22,8 @@ OUTPUT_PICTURES="./detected_features_pictures"
 PICS_CHUNK_SIZE=10
 # Class ID to target in detections
 CLASS_ID=0
+# Object name (only for display)
+OBJECT_NAME="Hydrant"
 
 
 ############################################################################
@@ -35,14 +37,14 @@ model = YOLO(MODEL_PATH)
 def processPicturesChunk(pnmxCollectionItems, picturesUrls, start, end):
 	print(f"      - Processing pictures {start+1} to {min(len(picturesUrls), end)} / {len(picturesUrls)}")
 	chunk = picturesUrls[start:end]
-	results = model.predict(source=chunk, imgsz=640, stream=True, max_det=1, classes=[CLASS_ID], verbose=False)
+	results = model.predict(source=chunk, imgsz=2048, stream=True, max_det=1, classes=[CLASS_ID], verbose=False)
 	i = 0
 	picResults = []
 	for res in results:
 		# If a picture has detections, save it
 		if len(res.boxes) > 0:
 			item = pnmxCollectionItems["features"][start+i]
-			print("        - Hydrant found in picture", item["id"])
+			print("        -", OBJECT_NAME, "found in picture", item["id"])
 			picResults.append(item)
 			res.save(filename=f"{OUTPUT_PICTURES}/{item['id']}.jpg")
 
