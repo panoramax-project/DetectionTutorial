@@ -217,7 +217,7 @@ yolo detect train \
 
 Nous utilisons ici le modèle de base `yolov8n.pt` ([voir tous les modèles disponibles dans la documentation](https://docs.ultralytics.com/models/yolov8/#supported-tasks-and-modes)), bien sûr cela peut être modifié pour améliorer la précision ou la performance du modèle produit.
 
-Notez également que le paramètre `imgsz=2048` doit correspondre à la largeur réelle des images téléchargées. Dans le script `find_pics.py` que nous avons utilisé, toutes les images ont été téléchargées avec une largeur de 2048 pixels. N'oubliez pas de changer la valeur ici si vous avez une taille d'image différente.
+Notez également que le paramètre `imgsz=2048` doit correspondre à la largeur réelle maximales des images les plus larges téléchargées. Dans le script `find_pics.py` que nous avons utilisé, toutes les images ont été téléchargées avec une largeur de 2048 pixels. N'oubliez pas de changer la valeur ici si vous avez une taille d'image différente.
 
 ![Entraînement YOLO et surconsommation du GPU](./Images/yolo_training.png)
 
