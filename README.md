@@ -1,22 +1,22 @@
-# 🖼️🤖 Tutorial : get started with YOLO and Panoramax !
+# 🖼️🤖 Tutorial : get started with YOLO, Panoramax and OpenStreetMap !
 
 ![Software logos](./Images/logos.png)
 
 __🇫🇷 [Version française ici](./README_fr.md) 🇫🇷__
 
-Welcome on this tutorial ! This tutorial will guide you through the process of creating a custom object detection model for street images coming from Panoramax, using YOLOv8 and Label Studio. The tutorial will help you through:
+Welcome on this tutorial ! It will guide you through the process of creating a custom object detection model for street images coming from Panoramax, using YOLOv8 and Label Studio. The tutorial will help you through:
 
-- Find known object locations by querying __OpenStreetMap__
-- Collect nearby pictures using __Panoramax__
-- Annotate pictures using __Label Studio__
-- Train a detection model with __YOLOv8__
+- Find known object locations by querying [__OpenStreetMap__](https://www.openstreetmap.org/)
+- Collect nearby pictures using [__Panoramax__](https://panoramax.fr/)
+- Annotate pictures using [__Label Studio__](https://labelstud.io/)
+- Train a detection model with [__YOLOv8__](https://docs.ultralytics.com)
 - Detect objects in Panoramax images
 
 We will also explore the re-training process based on false positives and offers insights into refining the model. The goal is to make you as autonomous and empowered on object detection by understanding the complete workflow.
 
 ## 🌐 The big picture
 
-[YOLOv8](https://docs.ultralytics.com/), or _You Only Look Once (version 8)_, is a powerful and efficient object detection algorithm widely utilized in computer vision applications. It builds upon the success of its predecessors, offering improved accuracy and speed in real-time object detection tasks. YOLOv8 is particularly notable for its ability to detect and classify objects within images or video frames swiftly and accurately. Developed with a focus on simplicity and effectiveness, YOLOv8 employs a single neural network to simultaneously predict bounding boxes and class probabilities for multiple objects in a given scene.
+[YOLOv8](https://docs.ultralytics.com/), or _You Only Look Once (version 8)_, is a powerful and efficient object detection algorithm widely utilized in computer vision applications. It is particularly notable for its ability to detect and classify objects within images or video frames swiftly and accurately. Developed with a focus on simplicity and effectiveness, YOLOv8 employs a single neural network to simultaneously predict bounding boxes and class probabilities for multiple objects in a given scene.
 
 Pictures annotation will be essential in this process. It's mainly teaching the algorithm what the features you're searching look like. We need to tell with many examples "This is a car, and it's right there in the picture". To do so, we draw over the picture many rectangles to spot objects, and assign to each of them a label (or class) to distinguish various features in a single image.
 
