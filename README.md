@@ -219,7 +219,11 @@ yolo detect train \
 
 We're using here as a base model `yolov8n.pt` ([see all available models in docs](https://docs.ultralytics.com/models/yolov8/#supported-tasks-and-modes)), this could be tweaked for improving model performance.
 
-Also note that the `imgsz=2048` parameter should correspond to the actual width of retrieved pictures. In the `find_pics.py` script we used, all pictures are downloaded with a fixed width of 2048 pixels. Don't forget to change the value here if you have different picture sizing.
+Note also the `imgsz=2048` parameter. This corresponds to the maximum size images will take before being analysed by YOLO. Larger images will be resized to a width of 2048 pixels, while smaller images will keep their original size. We are using 2048 pixels here because this corresponds to the width of standard definition pictures retrieved from Panoramax with the `find_pics.py` script. This size can be adapted to suit your needs:
+
+- If you want to use images with a higher resolution, the value should be increased.
+- If you have a graphics card with little memory, the value should be reduced.
+- If you want faster processing at the expense of finer object detection, reduce the value.
 
 ![YOLO training on your pictures and heating up your GPU](./Images/yolo_training.png)
 
