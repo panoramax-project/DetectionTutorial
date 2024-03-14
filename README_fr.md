@@ -372,7 +372,7 @@ La chose la plus importante à lire est ce qui arrive aux bornes incendie du jeu
 - 68% des bornes du jeu de validation sont correctement identifiés comme des bornes par le modèle (_vrais positifs_)
 - 32% d'entre elles ne sont pas détectées par le modèle (_faux négatifs_)
 
-Ce n'est pas extrêmement bon, mais ce n'est pas _si mal_ non plus. Une autre métrique concerne les _faux positifs_, des éléments détectés comme des piliers là où ils ne le sont pas. Ici, aucun pilier dans l'ensemble de données de validation ne ressort en tant que panneau de signalisation rouge, cône de signalisation, feu arrière de voiture... Ce qui est une bonne nouvelle !
+Ce n'est pas extrêmement bon, mais ce n'est pas _si mal_ non plus. Une autre métrique concerne les _faux positifs_, des éléments détectés comme des bornes là où il n'y en a pas. Ici, aucune borne dans l'ensemble de données de validation ne ressort en tant que panneau de signalisation rouge, cône de signalisation, feu arrière de voiture... Ce qui est une bonne nouvelle !
 
 [Plus d'infos sur l'interprétation de ces résultats sont disponibles dans la documentation de YOLO](https://docs.ultralytics.com/guides/yolo-performance-metrics/).
 
