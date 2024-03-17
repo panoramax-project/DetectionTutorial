@@ -34,16 +34,16 @@ OBJECT_NAME="Hydrant"
 print("Loading detection model...")
 model = YOLO(MODEL_PATH)
 
-def processPicturesChunk(pnmxCollectionItems, picturesUrls, start, end):
-	print(f"      - Processing pictures {start+1} to {min(len(picturesUrls), end)} / {len(picturesUrls)}")
-	chunk = picturesUrls[start:end]
+def processPicturesChunk(items, start, end):
+	print(f"      - Processing pictures {start+1} to {min(len(items), end)} / {len(items)}")
+	chunk = [ i["assets"]["sd"]["href"] for i in items[start:end] ]
 	results = model.predict(source=chunk, imgsz=2048, stream=True, max_det=1, classes=[CLASS_ID], verbose=False)
 	i = 0
 	picResults = []
 	for res in results:
 		# If a picture has detections, save it
 		if len(res.boxes) > 0:
-			item = pnmxCollectionItems["features"][start+i]
+			item = items[start+i]
 			print("        -", OBJECT_NAME, "found in picture", item["id"])
 			picResults.append(item)
 			res.save(filename=f"{OUTPUT_PICTURES}/{item['id']}.jpg")
@@ -80,11 +80,25 @@ for collection in pnmxCollections["collections"]:
 	pnmxCollectionItemsResponse = requests.get(f"{PANORAMAX_API}/collections/{collection['id']}/items")
 	pnmxCollectionItems = pnmxCollectionItemsResponse.json()
 
-	# Check every picture in this collection
-	print(f"    - Detecting objects in {len(pnmxCollectionItems['features'])} pictures...")
-	picturesUrls = [ i["assets"]["sd"]["href"] for i in pnmxCollectionItems["features"]]
-	for c in range(0, len(picturesUrls), PICS_CHUNK_SIZE):
-		picsWithFeatures += processPicturesChunk(pnmxCollectionItems, picturesUrls, c, c+PICS_CHUNK_SIZE)
+	# Only keep pictures really in search bounding box
+	picturesInBbox = []
+	for i in pnmxCollectionItems["features"]:
+		lon, lat = i["geometry"]["coordinates"]
+		if (
+			lon >= SEARCH_BBOX[0]
+			and lon <= SEARCH_BBOX[2]
+			and lat >= SEARCH_BBOX[1]
+			and lat <= SEARCH_BBOX[3]
+		):
+			picturesInBbox.append(i)
+	
+	# Run prediction over pictures, chunk by chunk
+	if len(picturesInBbox) > 0:
+		print(f"    - Detecting objects in {len(picturesInBbox)} pictures...")
+		for c in range(0, len(picturesInBbox), PICS_CHUNK_SIZE):
+			picsWithFeatures += processPicturesChunk(picturesInBbox, c, c+PICS_CHUNK_SIZE)
+	else:
+		print("    - Skipping sequence, no picture in search area")
 
 
 ############################################################################
