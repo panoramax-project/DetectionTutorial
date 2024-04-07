@@ -3,6 +3,7 @@ import requests
 import json
 import shutil
 import os
+import math
 
 ####################################################################
 # Define constants
@@ -74,9 +75,11 @@ pnmxCollectionsResponse = requests.get(f"{PANORAMAX_API}/collections?bbox={','.j
 pnmxCollections = pnmxCollectionsResponse.json()
 
 # Reading downloaded metadata
-for collection in pnmxCollections["collections"]:
+nbSequences = len(pnmxCollections["collections"])
+print(nbSequences, "sequences found")
+for i, collection in enumerate(pnmxCollections["collections"], start=1):
 	# List pictures in this collection
-	print("  - Find pictures in sequence", collection["id"])
+	print("  - Find pictures in sequence", collection["id"], f"({i}/{nbSequences} - {math.floor(i/nbSequences*100)}%)")
 	pnmxCollectionItemsResponse = requests.get(f"{PANORAMAX_API}/collections/{collection['id']}/items")
 	pnmxCollectionItems = pnmxCollectionItemsResponse.json()
 
