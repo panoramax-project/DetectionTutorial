@@ -21,6 +21,8 @@ OUTPUT_GEOJSON="./detected_features.geojson"
 OUTPUT_PICTURES="./detected_features_pictures"
 # How many pictures should be tested at once
 PICS_CHUNK_SIZE=10
+# Amount of sequences per API call
+NB_SEQUENCES_API=1000
 # Class ID to target in detections
 CLASS_ID=0
 # Object name (only for display)
@@ -61,6 +63,60 @@ def processPicturesChunk(items, start, end):
 
 
 ############################################################################
+# Function to handle a single page of sequences from API
+#
+
+def processAPISequencePage(url, pageNb = 1):
+	global picsWithFeatures
+	pnmxCollectionsResponse = requests.get(url)
+	pnmxCollections = pnmxCollectionsResponse.json()
+
+	# Reading downloaded metadata
+	nbSequences = len(pnmxCollections["collections"])
+	nextLink = next((l["href"] for l in pnmxCollections["links"] if l["rel"] == "next"), None)
+	hasNextPage = nextLink is not None and nbSequences == NB_SEQUENCES_API
+	if hasNextPage:
+		if pageNb == 1:
+			print("More than", nbSequences, "found, processing page", pageNb)
+		else:
+			print("Processing page", pageNb, "with", nbSequences, "sequences")
+	else:
+		print(nbSequences, "sequences found")
+	
+	for i, collection in enumerate(pnmxCollections["collections"], start=1):
+		# List pictures in this collection
+		try:
+			print("  - Find pictures in sequence", collection["id"], f"({i}/{nbSequences} - {math.floor(i/nbSequences*100)}%)")
+			pnmxCollectionItemsResponse = requests.get(f"{PANORAMAX_API}/collections/{collection['id']}/items")
+			pnmxCollectionItems = pnmxCollectionItemsResponse.json()
+
+			# Only keep pictures really in search bounding box
+			picturesInBbox = []
+			for i in pnmxCollectionItems["features"]:
+				lon, lat = i["geometry"]["coordinates"]
+				if (
+					lon >= SEARCH_BBOX[0]
+					and lon <= SEARCH_BBOX[2]
+					and lat >= SEARCH_BBOX[1]
+					and lat <= SEARCH_BBOX[3]
+				):
+					picturesInBbox.append(i)
+			
+			# Run prediction over pictures, chunk by chunk
+			if len(picturesInBbox) > 0:
+				print(f"    - Detecting objects in {len(picturesInBbox)} pictures...")
+				for c in range(0, len(picturesInBbox), PICS_CHUNK_SIZE):
+					picsWithFeatures += processPicturesChunk(picturesInBbox, c, c+PICS_CHUNK_SIZE)
+			else:
+				print("    - Skipping sequence, no picture in search area")
+		except Exception as e:
+			print("    - Error during processing\n      ", e)
+
+	if hasNextPage:
+		processAPISequencePage(nextLink, pageNb + 1)
+
+
+############################################################################
 # Checking collections one by one
 #
 
@@ -71,37 +127,7 @@ os.mkdir(OUTPUT_PICTURES)
 # Download collections from API
 picsWithFeatures = []
 print("List sequences in Panoramax...")
-pnmxCollectionsResponse = requests.get(f"{PANORAMAX_API}/collections?bbox={','.join([ str(f) for f in SEARCH_BBOX])}")
-pnmxCollections = pnmxCollectionsResponse.json()
-
-# Reading downloaded metadata
-nbSequences = len(pnmxCollections["collections"])
-print(nbSequences, "sequences found")
-for i, collection in enumerate(pnmxCollections["collections"], start=1):
-	# List pictures in this collection
-	print("  - Find pictures in sequence", collection["id"], f"({i}/{nbSequences} - {math.floor(i/nbSequences*100)}%)")
-	pnmxCollectionItemsResponse = requests.get(f"{PANORAMAX_API}/collections/{collection['id']}/items")
-	pnmxCollectionItems = pnmxCollectionItemsResponse.json()
-
-	# Only keep pictures really in search bounding box
-	picturesInBbox = []
-	for i in pnmxCollectionItems["features"]:
-		lon, lat = i["geometry"]["coordinates"]
-		if (
-			lon >= SEARCH_BBOX[0]
-			and lon <= SEARCH_BBOX[2]
-			and lat >= SEARCH_BBOX[1]
-			and lat <= SEARCH_BBOX[3]
-		):
-			picturesInBbox.append(i)
-	
-	# Run prediction over pictures, chunk by chunk
-	if len(picturesInBbox) > 0:
-		print(f"    - Detecting objects in {len(picturesInBbox)} pictures...")
-		for c in range(0, len(picturesInBbox), PICS_CHUNK_SIZE):
-			picsWithFeatures += processPicturesChunk(picturesInBbox, c, c+PICS_CHUNK_SIZE)
-	else:
-		print("    - Skipping sequence, no picture in search area")
+processAPISequencePage(f"{PANORAMAX_API}/collections?limit={NB_SEQUENCES_API}&bbox={','.join([ str(f) for f in SEARCH_BBOX])}")
 
 
 ############################################################################
